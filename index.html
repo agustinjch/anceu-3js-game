@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="gl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+    <meta name="theme-color" content="#0d1114" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <title>Pepe e as Pegadas de Anceu</title>
+    <meta name="description" content="Unha aventura sobre a memoria e o patrimonio de Anceu." />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" href="icon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,700;1,500&family=Cormorant+SC:wght@600;700&family=Nunito+Sans:wght@400;600;800&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="game"></div>
+    <div id="ui">
+      <div id="loading" class="screen">
+        <div class="loading-inner">
+          <div class="paw"></div>
+          <div class="loading-title">Pepe e as Pegadas de Anceu</div>
+          <div class="bar"><div id="loading-bar"></div></div>
+          <div id="loading-label"></div>
+        </div>
+      </div>
+      <div id="title" class="screen hidden">
+        <div class="title-wrap">
+          <div class="title-kicker" data-i18n="title.kicker"></div>
+          <h1 class="title-main">Pepe<span>e as</span>Pegadas de Anceu</h1>
+          <nav class="menu">
+            <button id="btn-continue" class="hidden" data-i18n="menu.continue"></button>
+            <button id="btn-new" data-i18n="menu.new"></button>
+            <button id="btn-lang" data-i18n="menu.lang"></button>
+            <button id="btn-credits" data-i18n="menu.credits"></button>
+          </nav>
+          <div class="title-foot" data-i18n="title.foot"></div>
+        </div>
+      </div>
+      <div id="chapter" class="hidden"><div class="ch-kicker"></div><div class="ch-title"></div></div>
+      <div id="hud" class="hidden">
+        <div id="objective"></div>
+        <div id="pegadas"><span class="paw-sm"></span><span id="pegadas-n">0/5</span></div>
+        <button id="btn-pause" aria-label="Pausa">❚❚</button>
+      </div>
+      <div id="prompt" class="hidden"><kbd>E</kbd><span></span></div>
+      <div id="subtitle" class="hidden"><div class="who"></div><div class="line"></div></div>
+      <div id="dialogue" class="hidden">
+        <div class="portrait"></div>
+        <div class="dl-body">
+          <div class="who"></div>
+          <div class="line"></div>
+          <div class="next">▾</div>
+        </div>
+      </div>
+      <div id="toast" class="hidden"></div>
+      <div id="skip" class="hidden" data-i18n="ui.skip"></div>
+      <div id="touch" class="hidden">
+        <button class="tbtn tb-jump" data-btn="jump">⤒</button>
+        <button class="tbtn tb-action hidden" data-btn="action">✋</button>
+        <button class="tbtn tb-bark" data-btn="bark">🐾</button>
+      </div>
+      <div id="pause" class="screen hidden">
+        <div class="panel">
+          <h2 data-i18n="pause.title"></h2>
+          <button id="btn-resume" data-i18n="pause.resume"></button>
+          <label><span data-i18n="pause.music"></span><input id="vol-music" type="range" min="0" max="1" step="0.05" /></label>
+          <label><span data-i18n="pause.sfx"></span><input id="vol-sfx" type="range" min="0" max="1" step="0.05" /></label>
+          <button id="btn-lang2" data-i18n="menu.lang"></button>
+          <button id="btn-quit" data-i18n="pause.quit"></button>
+        </div>
+      </div>
+      <div id="credits" class="screen hidden"><div class="panel credits-panel"></div></div>
+      <div id="rotate" class="hidden" data-i18n="ui.rotate"></div>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
