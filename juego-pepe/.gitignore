@@ -1,0 +1,6 @@
+node_modules
+dist
+*.local
+.shots
+# fotos de referencia scrapeadas (terceros, personas reales): solo en local
+assets/ref

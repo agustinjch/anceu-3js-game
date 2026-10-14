@@ -1,6 +1,5 @@
 node_modules
 dist
-*.local
+.dev
 .shots
-# fotos de referencia scrapeadas (terceros, personas reales): solo en local
-assets/ref
+*.local

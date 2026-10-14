@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>Super Pepe Bros — A Faísca de Anceu</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%E2%AD%90%3C/text%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@600;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body>
+  <canvas id="game"></canvas>
+  <div id="ui">
+    <div id="labels"></div>
+    <div id="hud" class="hidden">
+      <div id="power"><svg viewBox="-50 -50 100 100"><g id="powerSlices"></g><circle r="17" fill="#2b1a10"/><text id="powerNum" y="8" text-anchor="middle">8</text></svg></div>
+      <div id="counters">
+        <div class="counter"><span class="ico spark">★</span><span class="x">×</span><span id="sparkNum">0</span></div>
+        <div class="counter"><span class="ico nut"></span><span class="x">×</span><span id="nutNum">0</span></div>
+        <div class="counter hidden" id="breadRow"><span class="ico bread"></span><span class="x">×</span><span id="breadNum">0</span><span class="of">/8</span></div>
+      </div>
+      <div id="levelName"></div>
+    </div>
+    <div id="toast"></div>
+    <div id="letterbox"><div class="bar top"></div><div class="bar bottom"></div></div>
+    <div id="bigtext"><div class="main"></div><div class="sub"></div></div>
+    <div id="caption"></div>
+    <div id="dialog" class="hidden"><div class="name"></div><div class="text"></div><div class="more">▼</div></div>
+    <div id="choice" class="hidden"></div>
+    <div id="fade"></div>
+    <div id="menu" class="hidden"></div>
+    <div id="title" class="hidden">
+      <div class="logo">
+        <div class="super">SUPER</div>
+        <div class="pepe"><span>P</span><span>E</span><span>P</span><span>E</span> <span>B</span><span>R</span><span>O</span><span>S</span></div>
+        <div class="tag">A Faísca de Anceu</div>
+      </div>
+      <div class="press">Press Enter or Start</div>
+      <div class="titlemenu hidden"></div>
+      <div class="foot">An adventure from Anceu village · Ponte Caldelas · Galicia</div>
+    </div>
+    <div id="credits" class="hidden"><div class="roll"></div></div>
+    <div id="loading"><div class="ltitle">SUPER PEPE BROS</div><div class="lbar"><div class="lfill"></div></div><div class="lmsg">Waking Pepe up from his nap…</div></div>
+  </div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
