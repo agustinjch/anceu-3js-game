@@ -42,8 +42,8 @@ export function commonNormals() {
     sHK: mv({ startup: 9, active: 4, recovery: 20, damage: 80, hitstun: 21, blockstun: 16, pushback: 0.12, box: { x: 0.2, y: 0.9, w: 1.05, h: 0.55 }, strength: 'H', clip: 'Roundhouse_Kick' }),
     cLP: mv({ startup: 4, active: 3, recovery: 8, damage: 25, hitstun: 13, blockstun: 9, box: { x: 0.2, y: 0.65, w: 0.7, h: 0.3 }, cancel: 'chain', crouch: true, clip: 'Left_Jab_from_Guard' }),
     cHP: mv({ startup: 6, active: 5, recovery: 20, damage: 70, hitstun: 20, blockstun: 14, box: { x: 0.05, y: 0.8, w: 0.7, h: 1.2 }, cancel: 'special', strength: 'H', crouch: true, clip: 'Right_Uppercut_from_Guard' }),
-    cLK: mv({ startup: 5, active: 3, recovery: 10, damage: 30, hitstun: 13, blockstun: 9, level: 'low', box: { x: 0.2, y: 0, w: 0.9, h: 0.3 }, cancel: 'chain', crouch: true, clip: 'Leg_Sweep' }),
-    cHK: mv({ startup: 9, active: 4, recovery: 24, damage: 70, hitstun: 20, blockstun: 14, level: 'low', knockdown: true, box: { x: 0.2, y: 0, w: 1.15, h: 0.3 }, strength: 'H', crouch: true, clip: 'Leg_Sweep' }),
+    cLK: mv({ startup: 5, active: 3, recovery: 10, damage: 30, hitstun: 13, blockstun: 9, level: 'low', box: { x: 0.2, y: 0, w: 0.9, h: 0.3 }, cancel: 'chain', crouch: true, clip: 'Flying_Fist_Kick', clipTime: LOW_KICK }),
+    cHK: mv({ startup: 9, active: 4, recovery: 24, damage: 70, hitstun: 20, blockstun: 14, level: 'low', knockdown: true, box: { x: 0.2, y: 0, w: 1.15, h: 0.3 }, strength: 'H', crouch: true, clip: 'Flying_Fist_Kick', clipTime: { ...LOW_KICK, to: 1.85 } }),
     jLP: mv({ startup: 4, active: 8, recovery: 2, damage: 35, hitstun: 14, blockstun: 10, level: 'overhead', box: { x: 0.15, y: 0.6, w: 0.65, h: 0.45 }, air: true, clip: 'Left_Jab_from_Guard' }),
     jHP: mv({ startup: 7, active: 6, recovery: 2, damage: 70, hitstun: 19, blockstun: 14, level: 'overhead', box: { x: 0.2, y: 0.0, w: 0.75, h: 0.8 }, air: true, strength: 'H', clip: 'Right_Jab_from_Guard' }),
     jLK: mv({ startup: 5, active: 8, recovery: 2, damage: 40, hitstun: 15, blockstun: 10, level: 'overhead', box: { x: 0.2, y: -0.15, w: 0.75, h: 0.65 }, air: true, clip: 'Boxing_Guard_Right_Straight_Kick' }),
@@ -64,7 +64,11 @@ export const CLIP_SETS = {
   rosa: ['Female_Crouch_Pick_Throw_Forward', 'Big_Heart_Gesture', 'Stand_and_Drink', 'Punch_Forward_with_Both_Fists', 'Dozing_Elderly', 'Victory_Cheer'],
 };
 // every fighter also gets these (the throw animation lives in Rosa's set)
-export const SHARED_EXTRA = [{ set: 'rosa', clips: ['Punch_Forward_with_Both_Fists'] }];
+export const SHARED_EXTRA = [
+  { set: 'rosa', clips: ['Punch_Forward_with_Both_Fists'] },
+  { set: 'se', clips: ['Charged_Spell_Cast'] },   // its squat is the crouch / jump-tuck pose
+  { set: 'pepe', clips: ['Flying_Fist_Kick'] },   // low floor kick for crouching kicks
+];
 
 // Resolve a fighter's clipSets (+ SHARED_EXTRA) into [{set, clip}].
 export function fighterClips(def) {
@@ -82,42 +86,50 @@ export const CLIP_TIMING = {
   Combat_Stance: { loop: true },
   Walk_Fight_Forward: { loop: true },
   Walk_Fight_Back: { loop: true },
-  Left_Jab_from_Guard: { from: 0.15, hit: 0.42, to: 1.0 },
-  Right_Jab_from_Guard: { from: 0.15, hit: 0.5, to: 1.3 },
-  Boxing_Guard_Right_Straight_Kick: { from: 0.1, hit: 0.5, to: 1.25 },
-  Roundhouse_Kick: { from: 0.3, hit: 1.0, to: 2.3 },
-  Right_Uppercut_from_Guard: { from: 0.0, hit: 0.35, to: 1.0 },
-  Leg_Sweep: { from: 0.4, hit: 0.95, to: 2.2 },
-  Block1: { from: 0.2, hit: 0.5, to: 0.9 },
-  Hit_Reaction: { from: 0.0, hit: 0.15, to: 0.9 },
-  Knock_Down: { from: 0.0, hit: 0.1, to: 2.4 },
-  Stand_Up1: { from: 5.0, hit: 5.0, to: 8.2 },
-  Punch_Forward_with_Both_Fists: { from: 0.4, hit: 1.0, to: 2.4 },
+  Left_Jab_from_Guard: { from: 0.15, hit: 0.55, to: 1.1 },
+  Right_Jab_from_Guard: { from: 0.2, hit: 0.65, to: 1.3 },
+  Boxing_Guard_Right_Straight_Kick: { from: 0.2, hit: 0.72, to: 1.2 },
+  Roundhouse_Kick: { from: 0.6, hit: 1.5, to: 2.4 },
+  Right_Uppercut_from_Guard: { from: 0.1, hit: 0.5, to: 0.95 },
+  Leg_Sweep: { from: 0.3, hit: 0.9, to: 1.5 },
+  Block1: { from: 0.45, hit: 0.45, to: 0.45 },
+  Hit_Reaction: { from: 0.0, hit: 0.25, to: 1.0 },
+  Knock_Down: { from: 0.0, hit: 0.1, to: 2.1 },
+  Stand_Up1: { from: 2.35, hit: 2.35, to: 5.9 },
+  Punch_Forward_with_Both_Fists: { from: 0.6, hit: 1.5, to: 2.6 },
+  Charged_Spell_Cast: { from: 0.6, hit: 1.9, to: 2.6 },
+  Flying_Fist_Kick: { from: 1.0, hit: 2.0, to: 3.4 },
   // fighter extras
-  Shouting_Angrily: { from: 0.5, hit: 1.4, to: 2.6 },
-  Right_Hand_Sword_Slash: { from: 0.1, hit: 0.55, to: 1.45 },
-  Lunge_Spin_Kick: { from: 0.1, hit: 0.55, to: 1.6 },
-  Flying_Fist_Kick: { from: 0.4, hit: 1.4, to: 4.2 },
+  Shouting_Angrily: { from: 0.3, hit: 1.2, to: 2.6 },
+  Right_Hand_Sword_Slash: { from: 0.2, hit: 0.7, to: 1.4 },
+  Lunge_Spin_Kick: { from: 0.3, hit: 1.0, to: 1.6 },
   Wake_Up_and_Look_Up: { from: 0, hit: 0, to: 3.5 },
-  sleep: { from: 0, hit: 0, to: 5.6, loop: true },
-  Boxing_Guard_Prep_Straight_Punch: { from: 1.6, hit: 2.4, to: 3.4 },
-  Dodge_and_Counter: { from: 0.3, hit: 1.0, to: 2.2 },
-  Punch_Combo: { from: 0.0, hit: 0.3, to: 2.45 },
+  sleep: { from: 0, hit: 0, to: 4.6 },
+  Boxing_Guard_Prep_Straight_Punch: { from: 1.0, hit: 1.7, to: 2.8 },
+  Dodge_and_Counter: { from: 1.6, hit: 2.7, to: 4.2 },
+  Punch_Combo: { from: 0.0, hit: 0.9, to: 2.45 },
   Boxing_Warmup: { from: 0, hit: 0, to: 6.3 },
   Victory_Fist_Pump: { from: 0, hit: 0, to: 1.5, loop: true },
-  Charged_Spell_Cast: { from: 0.4, hit: 1.5, to: 2.6 },
-  mage_soell_cast: { from: 0.2, hit: 1.1, to: 2.2 },
+  mage_soell_cast: { from: 0.3, hit: 1.0, to: 2.2 },
   Stand_Dodge: { from: 0, hit: 0.6, to: 1.4 },
-  Charged_Ground_Slam: { from: 0.2, hit: 1.6, to: 3.0 },
+  Charged_Ground_Slam: { from: 0.4, hit: 1.7, to: 3.0 },
   Victory_Cheer: { from: 0, hit: 0, to: 9.3, loop: true },
   mage_soell_cast_2: { from: 0, hit: 0, to: 3.0 },
-  FunnyDancing_03: { from: 0.5, hit: 1.0, to: 3.5 },
-  FunnyDancing_01: { from: 0.5, hit: 1.0, to: 6.5 },
-  Female_Crouch_Pick_Up_Place_Side: { from: 1.0, hit: 2.4, to: 3.6 },
+  FunnyDancing_03: { from: 0.3, hit: 1.1, to: 3.4 },
+  FunnyDancing_01: { from: 0.3, hit: 1.0, to: 7.0 },
+  Female_Crouch_Pick_Up_Place_Side: { from: 0.6, hit: 2.7, to: 4.5 },
   Shake_It_Off_Dance: { from: 0, hit: 0, to: 16, loop: true },
   Confused_Scratch: { from: 0, hit: 0, to: 4.0 },
-  Female_Crouch_Pick_Throw_Forward: { from: 0.9, hit: 2.3, to: 3.6 },
-  Big_Heart_Gesture: { from: 0.4, hit: 1.2, to: 3.0 },
+  Female_Crouch_Pick_Throw_Forward: { from: 0.5, hit: 2.1, to: 3.2 },
+  Big_Heart_Gesture: { from: 0.3, hit: 1.0, to: 3.5, loop: true },
   Stand_and_Drink: { from: 0.5, hit: 3.5, to: 6.0 },
   Dozing_Elderly: { from: 0, hit: 0, to: 6.0 },
 };
+
+// Poses held by the layered animation (see FighterView): the squat used for crouching / jump tuck.
+export const POSES = {
+  crouch: { clip: 'Charged_Spell_Cast', t: 1.0 },
+  guard: { clip: 'Block1', t: 0.45 },
+};
+// A crouching kick is the low floor kick inside Flying_Fist_Kick.
+export const LOW_KICK = { from: 1.1, hit: 1.5, to: 1.7 };

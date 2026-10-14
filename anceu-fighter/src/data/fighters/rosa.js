@@ -34,7 +34,7 @@ export default {
     { input: 'down', btn: 'K', move: 'caldino', name: 'Caldiño' },
   ],
   super: 'super',
-  intro: { clip: 'Dozing_Elderly', line: 'Ai, filliño… ven aquí que te dou un bico.' },
+  intro: { clip: 'Stand_and_Drink', line: 'Ai, filliño… ven aquí que te dou un bico.' },
   victory: { clip: 'Big_Heart_Gesture', line: 'Límpate os pés.' },
   ai: { projectile: 'zapatilla', grab: 'abrazo', poke: 'sHK', heal: 'caldino' },
 };

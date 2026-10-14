@@ -37,7 +37,7 @@ export default {
     { input: 'down', btn: 'K', move: 'spin', name: 'Mordisco giratorio' },
   ],
   super: 'super',
-  intro: { clip: 'Wake_Up_and_Look_Up', line: 'Mmm… ¿xa é hora?' },
+  intro: { clip: 'Wake_Up_and_Look_Up', then: 'Stand_Up1', line: 'Mmm… ¿xa é hora?' },
   victory: { clip: 'sleep', line: 'Zzz… modo lento.' },
   ai: { projectile: 'bark', antiAir: 'spin', approach: 'whip', poke: 'sHK' },
 };
