@@ -95,7 +95,25 @@ function togglePause() {
 
 // ---------------------------------------------------------------- loop
 const clock = new THREE.Clock();
+// Any runtime error is shown on screen (and the loop keeps going) so a frozen game can be reported.
+const errBox = document.createElement('pre');
+errBox.style.cssText = 'position:fixed;left:8px;right:8px;bottom:8px;max-height:40vh;overflow:auto;margin:0;padding:10px;background:rgba(120,0,0,.9);color:#fff;font:12px/1.4 monospace;z-index:99;white-space:pre-wrap;display:none;pointer-events:auto';
+document.body.appendChild(errBox);
+const seenErr = new Set();
+function reportError(e) {
+  const msg = `${e?.message || e}\n${(e?.stack || '').split('\n').slice(0, 6).join('\n')}`;
+  if (seenErr.has(msg)) return;
+  seenErr.add(msg);
+  console.error(e);
+  errBox.style.display = 'block';
+  errBox.textContent += (errBox.textContent ? '\n\n' : '') + msg;
+}
+addEventListener('error', e => reportError(e.error || e.message));
+addEventListener('unhandledrejection', e => reportError(e.reason));
 function frame() {
+  try { tick(); } catch (e) { reportError(e); }
+}
+function tick() {
   const dt = Math.min(0.05, clock.getDelta());
   const m = readMenu();
   if (fight) {
