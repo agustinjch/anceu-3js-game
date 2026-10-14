@@ -202,14 +202,14 @@ export default {
 
     // --- Villagers ---
     const prog = game.sparkCount();
-    const T = (name, look, pos, ry, talk, anim) => { const n = new NPC(game, pos, { name, look, ry, talk, anim }); ctx.npcs[name] = n; return game.spawn(n); };
+    const T = (name, look, pos, ry, talk, anim) => { const n = new NPC(game, pos, { name, look, model: look.model, ry, talk, anim }); ctx.npcs[name] = n; return game.spawn(n); };
     T('Rosario', { skin: 0xe4b896, shirt: 0x2b2b30, skirt: 0x1d1d22, hair: 0xdddddd, hairStyle: 'bun', prop: 'cane', hat: 'scarf', hatColor: 0x222222, scale: 0.92 }, V(3, 0.05, 3.5), Math.PI * 0.8, async g => {
       const n = g.sparkCount();
       if (n >= 18) await g.say('Rosario', ['Every Faísca home. Now there is only one thing left.', 'Go up to that grey tower and remind that man what a village is.'], 300);
       else if (n >= 12) await g.say('Rosario', ['Twelve sparks! I can feel it in my knees, Pepe — the seal on the north door will break now.', 'Don Baleiro is waiting at the top of his tower. Go carefully, but go.'], 300);
       else await g.say('Rosario', ['Ai, Pepiño. Look at everyone, packing their bags.', 'Listen to an old woman: a village doesn\'t die when people leave. It dies when it forgets.', 'If each of us brings a little, things change — together. Even you, dog.', `You have ${n} Faíscas. Twelve should break the seal on Don Baleiro's door.`], 300);
     });
-    T('Rosa', { skin: 0xe8b48f, shirt: 0xc75a7a, pants: 0x3b3b4f, hair: 0x6a3a1a, hairStyle: 'long', apron: 0xf4efe2 }, V(-1.5, 0, -20.2), 0, async g => {
+    T('Rosa', { model: 'rosa', skin: 0xe8b48f, shirt: 0xc75a7a, pants: 0x3b3b4f, hair: 0x6a3a1a, hairStyle: 'long', apron: 0xf4efe2 }, V(-1.5, 0, -20.2), 0, async g => {
       g.player.health = g.player.maxHealth; g.updateHUD(); audio.sfx('heal');
       await g.say('Rosa', [g.sparkCount() < 6 ? 'Pepe! Come in, come in, the house is cold without the sparks… but there\'s always caldo for you.' : 'The house feels warmer with every Faísca you bring. I lit the fire again!', '(Rosa gives Pepe a bowl of caldo. Health fully restored!)', 'Keeper of the cosy house, that\'s me. Now go — and wipe your paws when you come back.'], 420);
     });
@@ -224,7 +224,7 @@ export default {
       } else if (!g.save.sparks.includes('hub-2')) await g.say('Agustín', ['Don Baleiro left grey drones snooping around the village. Their firmware is… rude.', 'Stomp all of them and I bet a Faísca will pop out. Hack the planet!'], 260);
       else await g.say('Agustín', ['Want the controls again? Pause with ESC and check "Controls".', 'Oh, and the hórreo by the horta… someone hid a button in the vegetable patch. Ground pound it!'], 260);
     }, 'laptop');
-    T('Se', { skin: 0xf0c4a0, shirt: 0x7a4fd0, pants: 0x222222, hair: 0xd0453a, hairStyle: 'curly', prop: 'brush', hat: 'beret', hatColor: 0x222244 }, V(34.5, 0, -6.5), -Math.PI / 2, async g => {
+    T('Se', { model: 'se', skin: 0xf0c4a0, shirt: 0x7a4fd0, pants: 0x222222, hair: 0xd0453a, hairStyle: 'curly', prop: 'brush', hat: 'beret', hatColor: 0x222244 }, V(34.5, 0, -6.5), -Math.PI / 2, async g => {
       await g.say('Se', ['Artista da pista, at your service! I painted these murals with the neighbours last summer.', 'When the Faíscas were stolen, the paint started to shimmer… They\'re doors now, Pepe! Doors to the places in the paintings.', 'Just run into one. The grey ones are still asleep — they need more sparks to wake up.'], 640);
     }, 'paint');
     T('O Panadeiro', { skin: 0xe8b48f, shirt: 0xffffff, pants: 0x6a6a6a, hair: 0x222222, beard: true, beardColor: 0x333333, hat: 'chef', prop: 'basket', scale: 1.05 }, V(-9, 0, 2), Math.PI / 2, async g => {

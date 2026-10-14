@@ -232,7 +232,7 @@ export default {
     game.spawn(new Checkpoint(game, V(-81, H(-81, -18), -18)));
 
     // ---------- NPCs ----------
-    const T = (name, look, pos, ry, talk, anim) => { const n = new NPC(game, pos, { name, look, ry, talk, anim }); ctx.npcs[name] = n; return game.spawn(n); };
+    const T = (name, look, pos, ry, talk, anim) => { const n = new NPC(game, pos, { name, look, model: look.model, ry, talk, anim }); ctx.npcs[name] = n; return game.spawn(n); };
     ctx.penned = 0;
     T('Lela a pastora', { skin: 0xe0a882, shirt: 0x8a3a2a, skirt: 0x3a3a4a, hair: 0x5a3a20, hairStyle: 'long', hat: 'scarf', hatColor: 0x2e6b4f, prop: 'staff' }, V(13.5, H(13.5, 46), 46), -Math.PI / 2, async g => {
       if (g.save.sparks.includes('mountain-5')) return g.say('Lela a pastora', ['All five home, all five fat and fluffy. Grazas, Pepe!', 'My grandmother herded sheep on this mountain. Now the turbines spin above them. Old and new, side by side — that\'s how it should be.'], 380);

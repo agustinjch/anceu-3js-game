@@ -4,6 +4,7 @@ import { audio } from './audio.js';
 import { fx } from './fx.js';
 import { input } from './input.js';
 import { mat, colorMat, boxGeo, rnd } from './kit.js';
+import { hasNpcModel, makeNpcModel } from './npcModels.js';
 
 const _v = new THREE.Vector3();
 const flatDist = (a, b) => Math.hypot(a.x - b.x, a.z - b.z);
@@ -328,7 +329,9 @@ export class NPC extends Entity {
   constructor(game, pos, opts) {
     super(game);
     this.name = opts.name; this.talk = opts.talk; this.radius = opts.radius || 2.6; this.anim = opts.anim || 'idle';
-    this.obj = makePerson(opts.look || {}); this.obj.position.copy(pos); this.obj.rotation.y = opts.ry || 0; this.baseYaw = opts.ry || 0;
+    if (opts.model && hasNpcModel(opts.model)) { this.rig = makeNpcModel(opts.model); this.obj = this.rig.obj; }
+    else this.obj = makePerson(opts.look || {});
+    this.obj.position.copy(pos); this.obj.rotation.y = opts.ry || 0; this.baseYaw = opts.ry || 0;
     this.parts = this.obj.userData.parts; this.t = rnd(0, 6);
     game.scene.add(this.obj);
     // collider
@@ -336,16 +339,10 @@ export class NPC extends Entity {
     this.near = false;
   }
   update(dt) {
-    this.t += dt; const p = this.parts;
+    this.t += dt;
     const pl = this.game.player, d = flatDist(pl.pos, this.obj.position);
-    // idle animation
-    p.head.rotation.z = Math.sin(this.t * 1.1) * 0.05;
-    this.obj.position.y += (Math.sin(this.t * 2) * 0.004);
-    if (this.anim === 'wave' || this.talking) { p.armR.rotation.z = 2.6 + Math.sin(this.t * 8) * 0.3; }
-    else if (this.anim === 'paint') { p.armR.rotation.x = -1.4 + Math.sin(this.t * 3) * 0.4; p.armR.rotation.z = 0.3 + Math.cos(this.t * 3) * 0.3; }
-    else if (this.anim === 'dance') { this.obj.rotation.y += dt * 2; p.armL.rotation.z = -2.5 + Math.sin(this.t * 6) * 0.3; p.armR.rotation.z = 2.5 + Math.cos(this.t * 6) * 0.3; this.obj.position.y = this.base + Math.abs(Math.sin(this.t * 6)) * 0.15; }
-    else if (this.anim !== 'laptop') { p.armR.rotation.z = 0.12 + Math.sin(this.t * 1.5) * 0.04; }
-    if (this.base === undefined) this.base = this.obj.position.y;
+    if (this.rig) this.updateRig(dt, d);
+    else this.updateProcedural(dt);
     // face player when near
     if (d < 6 && this.anim !== 'dance') {
       const want = Math.atan2(pl.pos.x - this.obj.position.x, pl.pos.z - this.obj.position.z);
@@ -355,13 +352,34 @@ export class NPC extends Entity {
     // push player out
     if (d < 0.8 && d > 0.001) { pl.pos.x = this.obj.position.x + (pl.pos.x - this.obj.position.x) / d * 0.8; pl.pos.z = this.obj.position.z + (pl.pos.z - this.obj.position.z) / d * 0.8; }
     this.near = d < this.radius && !pl.locked && pl.onGround;
-    this.game.ui.placeLabel(this.label, this.obj.position, 2.5 * this.obj.scale.y, d < 9, this.near ? (input.lastDevice === 'gamepad' ? 'Ⓨ Talk' : 'E  Talk') : '');
+    const labelH = this.rig ? this.rig.height + 0.45 : 2.5 * this.obj.scale.y;
+    this.game.ui.placeLabel(this.label, this.obj.position, labelH, d < 9, this.near ? (input.lastDevice === 'gamepad' ? 'Ⓨ Talk' : 'E  Talk') : '');
     if (this.near && (input.wasPressed('interact') || (input.wasPressed('attack') && d < 2))) {
       input.consume('attack'); input.consume('interact');
       this.game.player.spinTimer = 0;
       this.talking = true;
       this.game.talkTo(this).then(() => (this.talking = false));
     }
+  }
+  // GLB villager: idle loop, wave once when Pepe comes close, chat clips while talking.
+  updateRig(dt, d) {
+    const r = this.rig;
+    if (this.talking) { if (r.state !== 'talk') r.play('talk'); }
+    else if (r.state === 'talk') r.play('idle');
+    else if (d < 7 && !this.greeted) { this.greeted = true; r.play('wave'); }
+    if (d > 12) this.greeted = false;
+    r.mixer.update(dt);
+  }
+  updateProcedural(dt) {
+    const p = this.parts;
+    // idle animation
+    p.head.rotation.z = Math.sin(this.t * 1.1) * 0.05;
+    this.obj.position.y += (Math.sin(this.t * 2) * 0.004);
+    if (this.anim === 'wave' || this.talking) { p.armR.rotation.z = 2.6 + Math.sin(this.t * 8) * 0.3; }
+    else if (this.anim === 'paint') { p.armR.rotation.x = -1.4 + Math.sin(this.t * 3) * 0.4; p.armR.rotation.z = 0.3 + Math.cos(this.t * 3) * 0.3; }
+    else if (this.anim === 'dance') { this.obj.rotation.y += dt * 2; p.armL.rotation.z = -2.5 + Math.sin(this.t * 6) * 0.3; p.armR.rotation.z = 2.5 + Math.cos(this.t * 6) * 0.3; this.obj.position.y = this.base + Math.abs(Math.sin(this.t * 6)) * 0.15; }
+    else if (this.anim !== 'laptop') { p.armR.rotation.z = 0.12 + Math.sin(this.t * 1.5) * 0.04; }
+    if (this.base === undefined) this.base = this.obj.position.y;
   }
   remove() { super.remove(); this.game.ui.removeLabel(this.label); }
 }

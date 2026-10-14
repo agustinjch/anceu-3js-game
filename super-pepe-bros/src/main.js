@@ -10,6 +10,7 @@ import { fx } from './fx.js';
 import { FollowCam } from './camera.js';
 import { CollisionWorld } from './physics.js';
 import { Player, loadPepe } from './player.js';
+import { loadNpcModels } from './npcModels.js';
 import { UI, wait } from './ui.js';
 import { Builder, makeSky } from './kit.js';
 import { makeSparkMesh, Spark } from './entities.js';
@@ -103,7 +104,7 @@ class Game {
   // ---------- boot ----------
   async boot() {
     const fill = $('#loading .lfill');
-    const gltf = await loadPepe(p => (fill.style.width = (p * 100).toFixed(0) + '%'));
+    const [gltf] = await Promise.all([loadPepe(p => (fill.style.width = (p * 100).toFixed(0) + '%')), loadNpcModels()]);
     fill.style.width = '100%';
     this.player = new Player(gltf); this.player.game = this;
     this.scene.add(this.player.root);
