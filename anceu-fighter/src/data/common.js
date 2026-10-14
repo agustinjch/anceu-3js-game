@@ -45,9 +45,9 @@ export function commonNormals() {
     cLK: mv({ startup: 5, active: 3, recovery: 10, damage: 30, hitstun: 13, blockstun: 9, level: 'low', box: { x: 0.2, y: 0, w: 0.9, h: 0.3 }, cancel: 'chain', crouch: true, clip: 'Leg_Sweep' }),
     cHK: mv({ startup: 9, active: 4, recovery: 24, damage: 70, hitstun: 20, blockstun: 14, level: 'low', knockdown: true, box: { x: 0.2, y: 0, w: 1.15, h: 0.3 }, strength: 'H', crouch: true, clip: 'Leg_Sweep' }),
     jLP: mv({ startup: 4, active: 8, recovery: 2, damage: 35, hitstun: 14, blockstun: 10, level: 'overhead', box: { x: 0.15, y: 0.6, w: 0.65, h: 0.45 }, air: true, clip: 'Left_Jab_from_Guard' }),
-    jHP: mv({ startup: 7, active: 6, recovery: 2, damage: 70, hitstun: 19, blockstun: 14, level: 'overhead', box: { x: 0.2, y: 0.35, w: 0.75, h: 0.55 }, air: true, strength: 'H', clip: 'Right_Jab_from_Guard' }),
-    jLK: mv({ startup: 5, active: 8, recovery: 2, damage: 40, hitstun: 15, blockstun: 10, level: 'overhead', box: { x: 0.2, y: 0.15, w: 0.75, h: 0.45 }, air: true, clip: 'Boxing_Guard_Right_Straight_Kick' }),
-    jHK: mv({ startup: 8, active: 6, recovery: 2, damage: 80, hitstun: 20, blockstun: 15, level: 'overhead', box: { x: 0.2, y: 0.05, w: 0.95, h: 0.55 }, air: true, strength: 'H', clip: 'Roundhouse_Kick' }),
+    jHP: mv({ startup: 7, active: 6, recovery: 2, damage: 70, hitstun: 19, blockstun: 14, level: 'overhead', box: { x: 0.2, y: 0.0, w: 0.75, h: 0.8 }, air: true, strength: 'H', clip: 'Right_Jab_from_Guard' }),
+    jLK: mv({ startup: 5, active: 8, recovery: 2, damage: 40, hitstun: 15, blockstun: 10, level: 'overhead', box: { x: 0.2, y: -0.15, w: 0.75, h: 0.65 }, air: true, clip: 'Boxing_Guard_Right_Straight_Kick' }),
+    jHK: mv({ startup: 8, active: 6, recovery: 2, damage: 80, hitstun: 20, blockstun: 15, level: 'overhead', box: { x: 0.2, y: -0.25, w: 0.95, h: 0.75 }, air: true, strength: 'H', clip: 'Roundhouse_Kick' }),
     throw: mv({ startup: 3, active: 2, recovery: 22, damage: 120, grab: 'throw', box: { x: 0, y: 0.4, w: 0.95, h: 1.0 }, clip: 'Punch_Forward_with_Both_Fists' }),
   };
 }

@@ -3,7 +3,7 @@ import { mv, commonNormals } from '../common.js';
 const queimada = s => mv({
   startup: 13, active: 2, recovery: 30, damage: s === 'H' ? 90 : 80, chip: 16, hitstun: 20, blockstun: 16,
   strength: 'S', cancel: 'super', clip: 'Charged_Spell_Cast',
-  projectile: { kind: 'queimada', frame: 13, vx: s === 'H' ? 0.11 : 0.06, y: 0.9, w: 0.55, h: 0.5, life: 200 },
+  projectile: { kind: 'queimada', frame: 13, vx: s === 'H' ? 0.11 : 0.06, y: 0.55, w: 0.55, h: 0.6, life: 200 },
 });
 const neboa = s => mv({
   startup: 14, active: 0, recovery: 22, strength: 'S', clip: 'mage_soell_cast',
