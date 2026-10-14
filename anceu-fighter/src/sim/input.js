@@ -39,8 +39,12 @@ export class InputBuffer {
   // forward tapped twice within 14 frames, the second tap now (dash)
   doubleTap(dir) {
     const bit = dir === 'fwd' ? FWD : BACK;
-    if (!this.pressed(bit)) return false;
-    for (let i = 2; i < 14; i++) if ((this.hist[i] & bit) && !(this.hist[i + 1] & bit)) return true;
+    const edge = i => (this.hist[i] & bit) && !(this.hist[i + 1] & bit);
+    let k = -1;
+    for (let i = 0; i < Math.max(1, this.since); i++) if (edge(i)) { k = i; break; }
+    if (k < 0) return false;
+    // the first tap must be older than the newest one (not the same tap seen again after a freeze)
+    for (let i = k + 2; i < Math.min(SIZE - 1, k + 14); i++) if (edge(i)) return true;
     return false;
   }
   // which strength of a punch/kick was pressed this frame: 'L' | 'H' | null
@@ -52,6 +56,7 @@ export class InputBuffer {
   }
   // two buttons pressed together (one of them this frame, the other within 3 frames)
   chord(a, b) {
-    return (this.pressed(a) && this.pressed(b, 3)) || (this.pressed(b) && this.pressed(a, 3));
+    const w = Math.max(3, this.since + 2);
+    return (this.pressed(a) && this.pressed(b, w)) || (this.pressed(b) && this.pressed(a, w));
   }
 }

@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { Match, PHASE_FRAMES } from '../src/sim/match.js';
 import { FIGHTERS } from '../src/data/fighters/index.js';
 import { SIM } from '../src/data/common.js';
-import { D, LP, HP, LK } from '../src/sim/input.js';
+import { D, LP, HP, HK, LK } from '../src/sim/input.js';
 
 const mk = (a = 'pepe', b = 'pepe') => new Match({ p1: FIGHTERS[a], p2: FIGHTERS[b], skipIntro: true });
 const toFight = m => { while (m.phase !== 'fight') m.step(); };
@@ -109,4 +109,16 @@ test('intro plays before round 1', () => {
   assert.equal(m.fighters[0].state, 'intro');
   for (let i = 0; i < PHASE_FRAMES.intro; i++) m.step();
   assert.equal(m.phase, 'roundStart');
+});
+
+test('nothing lands after the round is decided', () => {
+  const m = mk('se', 'victor');
+  toFight(m);
+  const [se, vi] = m.fighters;
+  se.x = -0.5; vi.x = 0.5; se.health = 20; vi.health = 150; se.meter = 100;
+  m.step([HP | HK, 0]);                          // pot super is on its way
+  until(m, () => se.health <= 0 || m.phase !== 'fight', i => [0, i % 3 === 0 ? LP : 0]);
+  assert.equal(m.roundWinner, 1);
+  until(m, () => m.phase === 'roundStart' || m.phase === 'matchEnd');
+  assert.deepEqual(m.wins, [0, 1]);
 });

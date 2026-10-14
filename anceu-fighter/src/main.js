@@ -26,7 +26,9 @@ renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 // ---------------------------------------------------------------- screen stack
 let screen = null, overlay = null;
 function show(s) { if (screen) screen.el.remove(); screen = s; if (s) ui.appendChild(s.el); }
-function showOverlay(s) { if (overlay) overlay.el.remove(); overlay = s; if (s) ui.appendChild(s.el); }
+// overlays ignore input briefly so a player still mashing buttons doesn't pick an option blind
+function showOverlay(s) { if (overlay) overlay.el.remove(); overlay = s; if (s) { s.readyAt = performance.now() + 600; ui.appendChild(s.el); } }
+const overlayNav = m => { if (performance.now() >= overlay.readyAt) overlay.nav(m); };
 
 let lobby = null, fight = null, portraits = null, lastSetup = null;
 const unlockAudio = () => audio.init();
@@ -98,10 +100,10 @@ function frame() {
   const m = readMenu();
   if (fight) {
     if (m.start && !overlay) togglePause();
-    else if (overlay) overlay.nav(m);
+    else if (overlay) overlayNav(m);
     fight.update(dt);
   } else {
-    if (overlay) overlay.nav(m); else screen?.nav?.(m);
+    if (overlay) overlayNav(m); else screen?.nav?.(m);
     lobby.update(dt, renderer);
   }
 }

@@ -7,13 +7,14 @@ import { overlap, worldBox, boxCenter } from './collision.js';
 import { spawnProjectile, stepProjectiles, projBox, placeObject, stepObjects, slowFactor } from './projectiles.js';
 
 const BTN = { LP, HP, LK, HK };
+const NORMAL_IDS = new Set(['sLP', 'sHP', 'sLK', 'sHK', 'cLP', 'cHP', 'cLK', 'cHK', 'jLP', 'jHP', 'jLK', 'jHK']);
 const LIMIT = SIM.WALL - 0.3;
 const MAX_SEP = 6.5;
 
 export function createWorld(defA, defB) {
   return {
     fighters: [new Fighter(defA, 0), new Fighter(defB, 1)],
-    projectiles: [], objects: [], hitstop: 0, frame: 0, events: [],
+    projectiles: [], objects: [], hitstop: 0, frame: 0, events: [], roundOver: false,
   };
 }
 
@@ -28,8 +29,9 @@ export function stepFighters(world) {
     const o = fs[1 - f.side];
     if (f.actionable && !f.airborne) f.facing = sign(o.x - f.x) || f.facing;
   }
-  for (const f of fs) { decide(world, f); f.input.consume(); }
+  for (const f of fs) decide(world, f);
   for (const f of fs) advance(world, f);
+  for (const f of fs) f.input.consume();
   stepProjectiles(world);
   stepObjects(world);
   pushApart(world);
@@ -106,8 +108,14 @@ function decide(world, f) {
 
 function tryCancel(world, f) {
   const m = f.move;
-  if (!f.connected || !m.cancel) return;
   const inp = f.input;
+  // Two buttons pressed "together" often arrive a frame or two apart: the first one starts a
+  // normal, so a super / throw chord may replace a normal during its first 3 frames.
+  if (NORMAL_IDS.has(f.moveId) && f.mf <= 3 && !m.air) {
+    if (f.meter >= SIM.SUPER_COST && inp.chord(HP, HK) && startMove(world, f, f.def.super)) return;
+    if (inp.chord(LP, LK) && startMove(world, f, 'throw')) return;
+  }
+  if (!f.connected || !m.cancel) return;
   if (f.meter >= SIM.SUPER_COST && inp.chord(HP, HK) && startMove(world, f, f.def.super)) return;
   if (m.cancel === 'super') return;
   if (trySpecial(world, f)) return;
@@ -220,6 +228,11 @@ function advanceThrown(world, f, o) {
     emit(world, { type: 'tech', side: f.side });
     return;
   }
+  if (f.sf === SIM.TECH_WINDOW + 1 && world.roundOver) {
+    // the round ended while grabbed: let go without damage
+    f.thrownBy = null; o.grabbed = null; f.setState('idle');
+    return;
+  }
   if (f.sf === SIM.TECH_WINDOW + 1) {
     f.health = Math.max(0, f.health - m.damage);
     f.lastDamage = m.damage;
@@ -277,6 +290,7 @@ function grabbable(f) {
 }
 
 function resolveHits(world) {
+  if (world.roundOver) return; // after KO / time nothing new lands
   const fs = world.fighters;
   const hits = [], grabs = [];
   for (const f of fs) {
@@ -342,10 +356,11 @@ function isBlocking(def, m) {
   return true;
 }
 
-function applyHit(world, { att, def, m, proj, box, dir }) {
+function applyHit(world, { att, def, m, proj, object, box, dir }) {
   const c = boxCenter(box);
+  const strike = !proj && !object; // a blow from the attacker's body (not a projectile or a router)
   // Víctor's Esquiva: struck during the weave window → counter punch
-  if (!proj && def.state === 'attack' && def.move?.counter && def.mf >= def.move.counter[0] && def.mf <= def.move.counter[1]) {
+  if (strike && def.state === 'attack' && def.move?.counter && def.mf >= def.move.counter[0] && def.mf <= def.move.counter[1]) {
     att.connected = true; att.hitCount++; att.lastHitFrame = att.mf;
     startMove(world, def, def.move.counterMove);
     world.hitstop = Math.max(world.hitstop, HITSTOP.H);
@@ -353,7 +368,7 @@ function applyHit(world, { att, def, m, proj, box, dir }) {
     return;
   }
   if (proj) proj.hp--;
-  else { att.connected = true; att.hitCount++; att.lastHitFrame = att.mf; }
+  if (strike) { att.connected = true; att.hitCount++; att.lastHitFrame = att.mf; }
   const strength = m.strength || 'L';
 
   if (isBlocking(def, m)) {
@@ -365,7 +380,7 @@ function applyHit(world, { att, def, m, proj, box, dir }) {
     }
     att.meter = Math.min(SIM.METER_MAX, att.meter + m.damage * 0.05);
     def.meter = Math.min(SIM.METER_MAX, def.meter + m.damage * 0.03);
-    if (!proj && Math.abs(def.x) >= LIMIT - 0.05) att.pvx = -dir * m.pushback / 4;
+    if (strike && Math.abs(def.x) >= LIMIT - 0.05) att.pvx = -dir * m.pushback / 4;
     world.hitstop = Math.max(world.hitstop, HITSTOP[strength] - 2);
     emit(world, { type: 'block', side: att.side, target: def.side, strength, x: c.x, y: c.y });
     if (def.health <= 0) { knockDown(def, dir, true); emit(world, { type: 'ko', side: def.side }); }
@@ -379,18 +394,18 @@ function applyHit(world, { att, def, m, proj, box, dir }) {
   def.lastDamage = dmg;
   att.meter = Math.min(SIM.METER_MAX, att.meter + dmg * 0.12);
   def.meter = Math.min(SIM.METER_MAX, def.meter + dmg * 0.06);
-  const lastHit = !proj && att.hitCount >= m.hits;
+  const lastHit = strike && att.hitCount >= m.hits;
   if (def.health <= 0) {
     knockDown(def, dir, true);
     emit(world, { type: 'ko', side: def.side });
-  } else if ((m.knockdown && (proj || lastHit || m.hits === 1)) || def.airborne) {
+  } else if ((m.knockdown && (!strike || lastHit || m.hits === 1)) || def.airborne) {
     knockDown(def, dir, false);
   } else {
     def.move = null; def.moveId = null;
     def.setState('hitstun');
     def.stun = m.hitstun; def.crouchBlock = false;
     def.pvx = dir * m.pushback / 4;
-    if (!proj && Math.abs(def.x) >= LIMIT - 0.05) att.pvx = -dir * m.pushback / 4;
+    if (strike && Math.abs(def.x) >= LIMIT - 0.05) att.pvx = -dir * m.pushback / 4;
   }
   world.hitstop = Math.max(world.hitstop, HITSTOP[strength]);
   emit(world, { type: 'hit', side: att.side, target: def.side, damage: dmg, strength, x: c.x, y: c.y, combo: def.combo, fx: m.fx, bell: m.fx === 'bell' && lastHit });

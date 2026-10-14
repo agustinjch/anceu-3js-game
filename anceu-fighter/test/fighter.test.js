@@ -159,6 +159,21 @@ test('super needs a full bar and spends it', () => {
   assert.equal(w2.fighters[0].meter, 50);
 });
 
+test('super / throw chords pressed a frame apart still come out (kara cancel)', () => {
+  const w = world('se', 'pepe', -0.5, 0.5);
+  run(w, 5);
+  w.fighters[0].meter = 100;
+  tick(w, HP); // starts sHP
+  assert.equal(w.fighters[0].moveId, 'sHP');
+  const ev = tick(w, HP | HK);
+  assert.equal(w.fighters[0].moveId, 'super');
+  assert.ok(ev.some(e => e.type === 'super'));
+  const t = world('pepe', 'pepe', -0.35, 0.35);
+  tick(t, LP); tick(t, LP);
+  tick(t, LP | LK);
+  assert.equal(t.fighters[0].moveId, 'throw');
+});
+
 test('Rosa caldiño heals but never above max', () => {
   const w = world('rosa', 'pepe', -3, 3);
   w.fighters[0].health = 1000;
@@ -181,4 +196,35 @@ test('nobody leaves the stage', () => {
   const w = world('pepe', 'pepe', 0, 1);
   run(w, 400, L, R);
   for (const f of w.fighters) assert.ok(Math.abs(f.x) <= SIM.WALL - 0.3 + 1e-9);
+});
+
+test('super chord pressed during hitstop still comes out', () => {
+  const w = world('victor', 'pepe', -0.4, 0.4);
+  w.fighters[0].meter = 100;
+  run(w, 5, i => (i === 0 ? LP : 0));          // jab connects → hitstop
+  assert.ok(w.hitstop > 0);
+  run(w, 2, 0);
+  run(w, 12, HP | HK);                          // press both during the freeze and hold
+  assert.equal(w.fighters[0].moveId, 'super');
+});
+
+test('a single forward tap during a freeze is not a dash', () => {
+  const w = world('victor', 'pepe', -1, 1);
+  run(w, 5);
+  w.fighters[0].meter = 100;
+  tick(w, HP | HK);                             // Víctor's super: 30-frame freeze
+  run(w, 22, 0, 0);
+  run(w, 2, 0, L);                              // Pepe (facing left) taps forward once
+  run(w, 12, 0, 0);
+  assert.notEqual(w.fighters[1].state, 'dash');
+});
+
+test('Víctor Esquiva does not counter a router zap', () => {
+  const w = world('agus', 'victor', -2, 1.2);
+  run(w, 40, i => (i === 0 ? D : i === 1 ? D | LK : 0));
+  const r = w.objects[0];
+  assert.ok(r);
+  w.fighters[1].x = r.x + 0.9;
+  const ev = run(w, 40, 0, i => (i === 0 ? D : i === 1 ? D | LK : L));
+  assert.ok(!ev.some(e => e.type === 'counter'));
 });

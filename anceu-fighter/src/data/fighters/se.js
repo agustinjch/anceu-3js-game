@@ -26,7 +26,7 @@ export default {
     super: mv({
       startup: 14, active: 2, recovery: 34, damage: 330, chip: 60, hitstun: 40, blockstun: 22, strength: 'X',
       invuln: [0, 14], knockdown: true, superFreeze: true, clip: 'Charged_Ground_Slam', name: 'Conxuro da Queimada',
-      projectile: { kind: 'pot', frame: 12, atOpponent: true, y: 5, vx: 0, vy: -0.05, gravity: 0.004, w: 1.2, h: 1.0, life: 120 },
+      projectile: { kind: 'pot', frame: 12, atOpponent: true, y: 4, vx: 0, vy: -0.12, gravity: 0.006, w: 1.2, h: 1.0, life: 90 },
     }),
   },
   specials: [

@@ -78,12 +78,14 @@ export class Match {
       this.roundResult = koA && koB ? 'double' : 'ko';
       this.roundWinner = koA && koB ? 'draw' : koA ? 1 : 0;
       this.events.push({ type: 'announce', text: 'ko' });
+      this.world.roundOver = true;
       this.setPhase('ko');
     } else if (this.timer <= 0) {
       const ra = a.health / a.maxHealth, rb = b.health / b.maxHealth;
       this.roundResult = 'time';
       this.roundWinner = ra === rb ? 'draw' : ra > rb ? 0 : 1;
       this.events.push({ type: 'announce', text: 'time' });
+      this.world.roundOver = true;
       this.setPhase('roundEnd');
       this.awardRound();
     }
@@ -128,7 +130,7 @@ export class Match {
     this.timer = SIM.ROUND_FRAMES;
     this.roundWinner = null; this.roundResult = null;
     const w = this.world;
-    w.projectiles = []; w.objects = []; w.hitstop = 0;
+    w.projectiles = []; w.objects = []; w.hitstop = 0; w.roundOver = false;
     w.fighters[0].reset(-1.5); w.fighters[1].reset(1.5);
     this.setPhase('roundStart');
   }
