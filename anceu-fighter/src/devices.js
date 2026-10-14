@@ -63,7 +63,7 @@ export function readPlayer(i) {
 // Menu navigation, edge-triggered, from any player. Returns { up, down, left, right, ok, back, start, player }.
 let prevPad = [0, 0], prevStart = [false, false];
 export function readMenu() {
-  const out = { up: false, down: false, left: false, right: false, ok: false, back: false, start: false, player: 0 };
+  const out = { up: false, down: false, left: false, right: false, ok: false, back: false, start: false, any: menuPressed.size > 0, player: 0 };
   const kb = (codes, key, player = 0) => { for (const c of codes) if (menuPressed.has(c)) { out[key] = true; out.player = player; } };
   kb(['KeyW'], 'up'); kb(['KeyS'], 'down'); kb(['KeyA'], 'left'); kb(['KeyD'], 'right');
   kb(['ArrowUp'], 'up', 1); kb(['ArrowDown'], 'down', 1); kb(['ArrowLeft'], 'left', 1); kb(['ArrowRight'], 'right', 1);
@@ -79,6 +79,7 @@ export function readMenu() {
     if (edge & R) { out.right = true; out.player = i; }
     if (edge & (LK | LP)) { out.ok = true; out.player = i; }
     if (edge & HK) { out.back = true; out.player = i; }
+    if (edge) out.any = true;
     const st = !!p.buttons[9]?.pressed;
     if (st && !prevStart[i]) { out.start = true; out.player = i; }
     prevPad[i] = bits; prevStart[i] = st;

@@ -16,7 +16,7 @@ export function titleScreen(onStart) {
   const s = el(`<div class="screen title">${LOGO}<div class="press">Preme calquera botón</div>
     <div class="credit">Pepe e a xente de Anceu · Rural Hackers</div></div>`);
   s.addEventListener('click', onStart);
-  return { el: s, nav: m => { if (m.ok || m.start || m.back || m.up || m.down || m.left || m.right) onStart(); } };
+  return { el: s, nav: m => { if (m.any || m.ok || m.start) onStart(); } };
 }
 
 // A vertical list menu. items: [{ label, sub?, action }]
