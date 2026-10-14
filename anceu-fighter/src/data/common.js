@@ -2,9 +2,9 @@
 export const SIM = {
   FPS: 60,
   WALL: 5,               // stage walls at x = ±WALL
-  GRAVITY: 0.0075,
-  JUMP_VY: 0.15,         // 40-frame jump, 1.5 m apex
-  JUMP_VX: 0.05,
+  GRAVITY: 0.0074,
+  JUMP_VY: 0.133,        // 36-frame jump, 1.2 m apex
+  JUMP_VX: 0.056,
   PREJUMP: 3,
   LANDING: 4,
   DASH_FRAMES: 16,

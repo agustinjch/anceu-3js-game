@@ -60,7 +60,7 @@ export class Fighter {
   pushbox() {
     const w = SIM.PUSH_W;
     if (this.state === 'knockdown' || this.state === 'ko') return null;
-    if (this.airborne) return { x: this.x - w / 2, y: this.y + 0.3, w, h: 1.1 };
+    if (this.airborne) return { x: this.x - w / 2, y: this.y + 0.7, w, h: 0.7 }; // small and high: jumps can cross over
     return { x: this.x - w / 2, y: 0, w, h: this.crouching ? SIM.CROUCH_H : SIM.STAND_H };
   }
 
