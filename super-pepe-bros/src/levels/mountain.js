@@ -234,6 +234,9 @@ export default {
     // ---------- NPCs ----------
     const T = (name, look, pos, ry, talk, anim) => { const n = new NPC(game, pos, { name, look, model: look.model, ry, talk, anim }); ctx.npcs[name] = n; return game.spawn(n); };
     ctx.penned = 0;
+    T('Víctor', { model: 'victor' }, V(3.5, H(3.5, 56.5), 56.5), Math.PI * 1.1, async g => {
+      await g.say('Víctor', ['Rural Champs training, Pepe! Every Tuesday, eleven to twelve.', 'Warm-up: run, then jump three times in a row without stopping — triple jump! That\'s how you reach the high tiers.', 'Strong legs, strong village. Off you go!'], 240);
+    });
     T('Lela a pastora', { skin: 0xe0a882, shirt: 0x8a3a2a, skirt: 0x3a3a4a, hair: 0x5a3a20, hairStyle: 'long', hat: 'scarf', hatColor: 0x2e6b4f, prop: 'staff' }, V(13.5, H(13.5, 46), 46), -Math.PI / 2, async g => {
       if (g.save.sparks.includes('mountain-5')) return g.say('Lela a pastora', ['All five home, all five fat and fluffy. Grazas, Pepe!', 'My grandmother herded sheep on this mountain. Now the turbines spin above them. Old and new, side by side — that\'s how it should be.'], 380);
       const left = 5 - ctx.penned;

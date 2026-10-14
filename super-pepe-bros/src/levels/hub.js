@@ -213,11 +213,11 @@ export default {
       g.player.health = g.player.maxHealth; g.updateHUD(); audio.sfx('heal');
       await g.say('Rosa', [g.sparkCount() < 6 ? 'Pepe! Come in, come in, the house is cold without the sparks… but there\'s always caldo for you.' : 'The house feels warmer with every Faísca you bring. I lit the fire again!', '(Rosa gives Pepe a bowl of caldo. Health fully restored!)', 'Keeper of the cosy house, that\'s me. Now go — and wipe your paws when you come back.'], 420);
     });
-    T('Africa', { skin: 0xd9a37e, shirt: 0xf2b134, pants: 0x2d4a6a, hair: 0x1a1210, hairStyle: 'curly' }, V(4, 0, -14), Math.PI, async g => {
+    T('Africa', { model: 'africa', skin: 0xd9a37e, shirt: 0xf2b134, pants: 0x2d4a6a, hair: 0x1a1210, hairStyle: 'curly' }, V(4, 0, -14), Math.PI, async g => {
       const s = id => `${g.levelSparkCount(id)}/${{ hub: 3, river: 5, forest: 5, mountain: 5 }[id]}`;
       await g.say('Africa', ['I\'m making the magic happen — or I was, until the magic got stolen.', `Here's the plan, Pepe. Village: ${s('hub')} · River: ${s('river')} · Forest: ${s('forest')} · Mountain: ${s('mountain')}.`, g.sparkCount() < 3 ? 'Start with Se\'s river mural on the east wall. You\'ll need 3 Faíscas to open the forest one.' : g.sparkCount() < 7 ? 'The forest mural is open! The mountain one needs 7 sparks.' : 'All murals are open. Twelve sparks for the north door!'], 560);
     });
-    T('Agustín', { skin: 0xe2b08a, shirt: 0x3d6b3a, pants: 0x4a3a2a, hair: 0x3a2a1a, beard: true, glasses: true, prop: 'laptop' }, V(-7.2, 0, -12), 0.6, async g => {
+    T('Agustín', { model: 'agustin', skin: 0xe2b08a, shirt: 0x3d6b3a, pants: 0x4a3a2a, hair: 0x3a2a1a, beard: true, glasses: true, prop: 'laptop' }, V(-7.2, 0, -12), 0.6, async g => {
       if (!g.flag('tutorial')) {
         g.flag('tutorial', true);
         await g.say('Agustín', ['Pepe! The fibre is down, the router is sad, and Don Baleiro took every Faísca. Classic Tuesday.', 'Quick hacker briefing: WASD or the stick to move. SPACE to jump — chain three jumps while running for a big triple jump!', 'SHIFT while running + SPACE: long jump. SHIFT standing + SPACE: backflip. SHIFT in the air: ground pound.', 'J or click: spin attack. Jump into a wall and press SPACE again to wall-kick. Run into a ledge to climb it.', 'Mouse (click to capture) or Q / R rotate the camera. Problems are opportunities. Now go hack reality!'], 260);
@@ -229,6 +229,12 @@ export default {
     }, 'paint');
     T('O Panadeiro', { skin: 0xe8b48f, shirt: 0xffffff, pants: 0x6a6a6a, hair: 0x222222, beard: true, beardColor: 0x333333, hat: 'chef', prop: 'basket', scale: 1.05 }, V(-9, 0, 2), Math.PI / 2, async g => {
       await g.say('O Panadeiro', ['Bread at nine o\'clock, every morning, for forty years. Until today!', 'The grey wind blew my loaves all the way down to the Verdugo river. Eight of them!', 'Find all eight and I\'m sure something good will happen. Bread always brings people together.'], 220);
+    });
+    T('Rosabel', { model: 'rosabel' }, V(6.5, 0, -18.5), -2.6, async g => {
+      await g.say('Rosabel', ['Pepe! Paws off the clean floor, I just mopped it!', 'Fresh sheets, clean rooms, new colivers arriving every week… I keep this house shining.', 'But that grey fog gets into everything. Bring the Faíscas back and even the windows will sparkle again.'], 380);
+    });
+    T('Nacho', { model: 'nacho' }, V(-9.8, 0, -9.6), 1.2, async g => {
+      await g.say('Nacho', ['Nacho here! I\'m mapping every path around Anceu, from the mills to the reservoir.', 'Since the grey fog came, half my map is just… blank. Every Faísca you find puts a bit of it back.'], 250);
     });
     T('Kenji', { skin: 0xf0d0a8, shirt: 0x334455, pants: 0x223344, hair: 0x111111, prop: 'laptop' }, V(-3, 0, -16.4), 0, async g => {
       await g.say('Kenji (coliver)', g.sparkCount() < 9 ? ['I came for two weeks and stayed three months. I was going to leave today…', 'Funny. I can\'t remember why I wanted to. Something about efficiency?'] : ['I unpacked my bags! Sourdough workshop is back on tomorrow.'], 480);

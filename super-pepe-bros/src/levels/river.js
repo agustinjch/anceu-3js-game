@@ -104,6 +104,12 @@ export default {
     game.spawn(new NPC(game, V(-30, H(-30, 13), 13), { name: 'Paco', ry: Math.PI * 0.9, look: { skin: 0xd8a080, shirt: 0x5a7a3a, pants: 0x3a3a2a, hair: 0x888888, hat: 'cap', hatColor: 0x3a5a2a, prop: 'staff', beard: true, beardColor: 0x999999 }, talk: async g => {
       await g.say('Paco o pescador', ['Shh! You\'ll scare the trout.', 'Ponte Caldelas has held the Festa da Troita since 1967. Best trout in Galicia, from this very river.', 'But those grey drones and their beetles are dumping rubbish in the water. The fish are furious.'], 220);
     } }));
+    game.spawn(new NPC(game, V(-55, H(-55, 26.5), 26.5), { name: 'Andreea', model: 'andreea', ry: Math.PI * 0.6, talk: async g => {
+      await g.say('Andreea', ['Hi Pepe! I\'m painting the river for the next mural in the village.', 'The water used to sparkle so much I couldn\'t mix the right blue. Now it\'s all grey… help it shine again?'], 420);
+    } }));
+    game.spawn(new NPC(game, V(-53.6, H(-53.6, 27.8), 27.8), { name: 'Flo', model: 'flo', ry: Math.PI * 0.7, talk: async g => {
+      await g.say('Flo', ['Andreea paints, I carry the easel. Teamwork!', 'Watch out downstream — those beetles bite. Spin into them, don\'t pet them.'], 230);
+    } }));
     game.spawn(new NPC(game, V(-50, H(-50, 18), 18), { name: 'Lucía', ry: Math.PI / 2, anim: 'wave', look: { skin: 0xf0c8a0, shirt: 0x2f9fd0, pants: 0x2a3a5a, hair: 0x8a4a1a, hairStyle: 'long', hat: 'cap', hatColor: 0xffd23a } }, ));
     const lucia = game.entities[game.entities.length - 1];
     lucia.talk = async g => {

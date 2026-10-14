@@ -138,6 +138,9 @@ export default {
       if (plantSpots.some(p => Math.hypot(p.x - x, p.z - z) < 3.5) || Math.hypot(x - 38, z - 40) < 2.5) continue;
       B.tree(x, H(x, z) - 0.2, z, 'eucalyptus', 0.9 + Math.random() * 0.4);
     }
+    game.spawn(new NPC(game, V(3.5, H(3.5, -6), -6), { name: 'Ana', model: 'ana', ry: Math.PI * 0.85, talk: async g => {
+      await g.say('Ana', ['Ai, Pepe, you gave me a fright! I\'m Ana, from La Imaginaria — I run the Fem Tech workshops in the village.', 'Phones, tablets, video calls with the grandchildren… anyone can learn. Even a dog, I bet.', 'Careful in this forest. The trasnos love to play tricks on visitors.'], 360);
+    } }));
     game.spawn(new NPC(game, V(38, H(38, 40), 40), { name: 'Brais (Green Mission)', ry: -2.4, look: { skin: 0xdcae88, shirt: 0x4f8a3a, pants: 0x5a4a32, hair: 0x6a4a2a, hat: 'cap', hatColor: 0x2f6a3a, beard: true }, talk: async g => {
       const n = ctx.planted;
       await g.say('Brais (Green Mission)', g.save.sparks.includes('forest-5')

@@ -9,6 +9,14 @@ import { clone as cloneSkinned } from 'three/examples/jsm/utils/SkeletonUtils.js
 export const NPC_MODELS = {
   rosa: 1.62,
   se: 1.62,
+  agustin: 1.78,
+  africa: 1.65,
+  nacho: 1.78,
+  rosabel: 1.6,
+  andreea: 1.65,
+  flo: 1.8,
+  victor: 1.78,
+  ana: 1.62,
 };
 
 const cache = {};
